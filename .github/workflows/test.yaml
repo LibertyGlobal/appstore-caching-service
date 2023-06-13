@@ -1,0 +1,22 @@
+name: Test the project
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: "JDK Version"
+        type: string
+        required: true
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+          cache: maven
+      - name: Test
+        run:
+          mvn verify

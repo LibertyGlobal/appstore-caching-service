@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.lgi.appstore</groupId>
+        <artifactId>caching-service-parent</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>appstore-caching-service-nginx</artifactId>
+    <name>AppStore Caching Service Nginx</name>
+
+    <properties>
+        <docker_maven_plugin.version>0.40.2</docker_maven_plugin.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker_maven_plugin.version}</version>
+                <configuration>
+                    <logDate>default</logDate>
+                    <autoPull>always</autoPull>
+                    <images combine.self="override">
+                        <image>
+                            <name>${docker_registry.domain}/${docker_registry.username}/${docker.image}</name>
+                            <build>
+                                <from>nginx:${nginx.version}</from>
+                                <tags>
+                                    <tag>${scmCommit}</tag>
+                                    <tag>${project.version}</tag>
+                                    <tag>latest</tag>
+                                </tags>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                                <runCmds>
+                                    <run>groupadd -g 1000 nginx-bundles</run>
+                                    <run>usermod -a -G nginx-bundles nginx</run>
+                                </runCmds>
+                                <assembly>
+                                    <basedir>/</basedir>
+                                    <inline>
+                                        <files>
+                                            <file>
+                                                <source>${project.basedir}/default.conf.template</source>
+                                                <outputDirectory>/etc/nginx/templates</outputDirectory>
+                                            </file>
+                                            <file>
+                                                <source>${project.basedir}/nginx.conf</source>
+                                                <outputDirectory>/etc/nginx</outputDirectory>
+                                            </file>
+                                            <file>
+                                                <source>${project.basedir}/appstore-caching-service.yaml</source>
+                                                <outputDirectory>/etc/nginx</outputDirectory>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                                <env>
+                                    <ASBS_SERVICE>localhost</ASBS_SERVICE>
+                                    <ENCRYPTED_BUNDLES_PATH>/data/nginx/</ENCRYPTED_BUNDLES_PATH>
+                                    <DNS_RESOLVER_CONFIGURATION># DNS Resolver is not configured</DNS_RESOLVER_CONFIGURATION>
+                                </env>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

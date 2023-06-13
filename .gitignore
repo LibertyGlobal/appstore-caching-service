@@ -1,0 +1,7 @@
+.idea/
+*.iml
+*.log
+target/
+overrides.properties
+appstore-caching-service-test/.allure
+appstore-caching-service-test/allure-results
