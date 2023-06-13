@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  appstore-caching-service:
+  - apiVersion: v1
+    appVersion: 0.6.0
+    created: "2023-06-13T13:26:51.787011268Z"
+    description: Appstore Caching Service
+    digest: cdf2d1a04a729ac6eac37c63750db24a221d70ab0f25fd4906bb79e501fb47d4
+    home: https://github.com/LibertyGlobal/appstore-caching-service
+    kubeVersion: '>=1.12.0-0'
+    name: appstore-caching-service
+    sources:
+    - https://github.com/LibertyGlobal/appstore-caching-service
+    urls:
+    - https://libertyglobal.github.io/appstore-caching-service/charts/appstore-caching-service-0.6.0.tgz
+    version: 0.6.0
+generated: "2023-06-13T13:26:51.785969459Z"

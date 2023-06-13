@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.lgi.appstore</groupId>
+    <artifactId>caching-service-parent</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>AppStore Caching Service</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <nginx.version>1.21</nginx.version>
+        <skipITs>false</skipITs>
+        <commons.version>2.9.0</commons.version>
+        <logging.version>1.1.1</logging.version>
+        <docker_registry.username>set_repository_username</docker_registry.username>
+        <docker_registry.domain>set_repository_domain</docker_registry.domain>
+        <docker.image>appstore-caching-service</docker.image>
+        <license.failOnMissing>true</license.failOnMissing>
+        <license.failOnBlacklist>true</license.failOnBlacklist>
+        <license.thirdPartyFilename>LICENSE-THIRD-PARTY.txt</license.thirdPartyFilename>
+        <license.includedLicenses>
+            Apache2|${line.separator}
+            Apache 2|${line.separator}
+            Apache 2.0|${line.separator}
+            Apache-2.0|${line.separator}
+            Apache License 2.0|${line.separator}
+            Apache License v2.0|${line.separator}
+            Apache License, version 2.0|${line.separator}
+            Apache License, Version 2.0|${line.separator}
+            Apache Software License - Version 2.0|${line.separator}
+            ASL 2.0|${line.separator}
+            The Apache License, Version 2.0|${line.separator}
+            The Apache Software License, Version 2.0|${line.separator}
+            BSD|${line.separator}
+            BSD License 3|${line.separator}
+            BSD-2-Clause|${line.separator}
+            The BSD 3-Clause License|${line.separator}
+            BSD-3-Clause|${line.separator}
+            BSD Licence 3|${line.separator}
+            New BSD License|${line.separator}
+            The BSD License|${line.separator}
+            CC0|${line.separator}
+            CC0 1.0 Universal License|${line.separator}
+            Public Domain, per Creative Commons CC0|${line.separator}
+            COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|${line.separator}
+            CDDL/GPLv2+CE|${line.separator}
+            CDDL + GPLv2 with classpath exception|${line.separator}
+            Eclipse Public License 1.0|${line.separator}
+            Eclipse Public License - v 1.0|${line.separator}
+            Eclipse Public License, Version 1.0|${line.separator}
+            Eclipse Public License v2.0|${line.separator}
+            EDL 1.0|${line.separator}
+            Eclipse Distribution License - v 1.0|${line.separator}
+            GPL2 w/ CPE|${line.separator}
+            MIT|${line.separator}
+            MIT License|${line.separator}
+            The MIT License|${line.separator}
+            The MIT License (MIT)|${line.separator}
+        </license.includedLicenses>
+        <license.skipExistingHeaders>true</license.skipExistingHeaders>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>appstore-caching-service-nginx</module>
+        <module>appstore-caching-service-test</module>
+    </modules>
+    <profiles>
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration combine.self="override">
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <skipITs>false</skipITs>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-third-party-dependency-licenses-report</id>
+                        <goals>
+                            <goal>aggregate-add-third-party</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>4.0.rc2</version>
+                <configuration>
+                    <defaultProperties>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <license.year>${current.year}</license.year>
+                        <license.owner>Liberty Global Technology Services BV</license.owner>
+                    </defaultProperties>
+                    <failIfUnknown>true</failIfUnknown>
+                    <aggregate>true</aggregate>
+                    <mapping>
+                        <conf>SCRIPT_STYLE</conf>
+                        <Dockerfile>SCRIPT_STYLE</Dockerfile>
+                        <tpl>SCRIPT_STYLE</tpl>
+                        <template>SCRIPT_STYLE</template>
+                    </mapping>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>LICENSE-HEADER-TEMPLATE.txt</header>
+                            <includes>**/*.java,**/*.sql,**/*.conf,**/Dockerfile,**/*.yaml,**/*.groovy,**/*.yml,**/*.tpl, **/*.template</includes>
+                        </licenseSet>
+                    </licenseSets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-license-headers</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
