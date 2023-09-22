@@ -21,6 +21,10 @@ upstream asbs-backend {
     server ${ASBS_SERVICE};
 }
 
+upstream asbm-backend {
+    server ${ASBM_SERVICE};
+}
+
 map $http_x_request_id $reqid {
     default   $http_x_request_id;
     ""        $request_id;
@@ -43,7 +47,7 @@ server {
         alias /etc/nginx/appstore-caching-service.yaml;
     }
 
-    location /bundles {
+    location ~ ^/(platforms|bundles) {
         if ($request_method = 'OPTIONS') {
             add_header 'Access-Control-Allow-Origin' '*';
             add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE';
@@ -79,7 +83,7 @@ server {
 
         add_header 'Access-Control-Allow-Credentials' true always;
         add_header 'Access-Control-Allow-Origin' '*' always;
-        proxy_pass http://${ASBM_SERVICE};
+        proxy_pass http://asbm-backend;
     }
 
     location @backend {
