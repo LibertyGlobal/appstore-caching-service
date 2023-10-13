@@ -40,6 +40,5 @@ deployment:
     image: daccloud/appstore-caching-service
 pvc:
   bundleGenerator:
-    claimName: bundle-generator-service-bundle-generator-service
-    volumeName: pvc-fdff4044-ca5a-46a4-a550-c9eae21b376e
-    storageClassName: nfs
+    volumeName: <your_pvc_volume_name>
+    storageClassName: <your_storage_class_name>
